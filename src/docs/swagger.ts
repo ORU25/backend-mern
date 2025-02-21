@@ -27,6 +27,16 @@ const doc = {
         LoginRequest: {
             identifier: "abimanyu",
             password: "12345678"
+        },
+        RegisterRequest: {
+            fullname: "abimanyu",
+            username: "abimanyu",
+            email: "abimanyu@gmail.com",
+            password: "12345678",
+            confirmPassword: "12345678"
+        },
+        ActivationRequest: {
+            code: "12345678"
         }
     }
   }
