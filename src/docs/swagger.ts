@@ -17,29 +17,29 @@ const doc = {
     },
   ],
   components: {
-    securitySchemas: {
-        bearerAuth: {
-            type: "http",
-            scheme: "bearer",
-        }
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+      },
     },
     schemas: {
-        LoginRequest: {
-            identifier: "abimanyu",
-            password: "12345678"
-        },
-        RegisterRequest: {
-            fullname: "abimanyu",
-            username: "abimanyu",
-            email: "abimanyu@gmail.com",
-            password: "12345678",
-            confirmPassword: "12345678"
-        },
-        ActivationRequest: {
-            code: "12345678"
-        }
-    }
-  }
+      LoginRequest: {
+        identifier: "abimanyu",
+        password: "12345678",
+      },
+      RegisterRequest: {
+        fullname: "abimanyu",
+        username: "abimanyu",
+        email: "abimanyu@gmail.com",
+        password: "12345678",
+        confirmPassword: "12345678",
+      },
+      ActivationRequest: {
+        code: "12345678",
+      },
+    },
+  },
 };
 
 const outputFile = "./swagger-output.json";
