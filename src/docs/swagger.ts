@@ -1,3 +1,4 @@
+import { name } from "ejs";
 import swaggerAutogen from "swagger-autogen";
 
 const doc = {
@@ -38,6 +39,29 @@ const doc = {
       ActivationRequest: {
         code: "12345678",
       },
+      CreateCategoryRequest: {
+        name: "",
+        description: "",
+        icon: "",
+      },
+      CreateEventRequest: {
+        name: "",
+        banner:
+          "fileUrl",
+        category: "category ObjectID",
+        description: "",
+        startDate: "yyyy-mm-dd hh:mm:ss",
+        endDate: "yyyy-mm-dd hh:mm:ss",
+        location: {
+          region: "region id",
+          coordinates: [0, 0],
+        },
+        isOnline: false,
+        isFeatured: false,
+      },
+      RemoveMediaRequest: {
+        fileUrl: "",
+      },
     },
   },
 };
@@ -45,4 +69,4 @@ const doc = {
 const outputFile = "./swagger-output.json";
 const endpointsFiles = ["../routes/api.ts"];
 
-swaggerAutogen({openapi: "3.0.0"})(outputFile,endpointsFiles,doc);
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc);
