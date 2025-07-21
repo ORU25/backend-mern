@@ -11,7 +11,7 @@
       "description": "Local server"
     },
     {
-      "url": "https://backend-mern-bay.vercel.app/api",
+      "url": "https://acara-backend-mern-oru.vercel.app/api",
       "description": "Deploy Server"
     }
   ],

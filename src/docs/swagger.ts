@@ -13,7 +13,7 @@ const doc = {
       description: "Local server",
     },
     {
-      url: "https://backend-mern-bay.vercel.app/api",
+      url: "https://acara-backend-mern-oru.vercel.app/api",
       description: "Deploy Server",
     },
   ],
@@ -46,8 +46,7 @@ const doc = {
       },
       CreateEventRequest: {
         name: "",
-        banner:
-          "fileUrl",
+        banner: "fileUrl",
         category: "category ObjectID",
         description: "",
         startDate: "yyyy-mm-dd hh:mm:ss",
