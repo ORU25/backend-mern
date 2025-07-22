@@ -9,6 +9,7 @@ import categoryController from "../controllers/category.controller";
 import regionController from "../controllers/region.controller";
 import eventController from "../controllers/event.controller";
 import ticketController from "../controllers/ticket.controller";
+import bannerController from "../controllers/banner.controller";
 
 const router = express.Router();
 
@@ -17,27 +18,35 @@ router.post("/auth/login", authController.login);
 router.get("/auth/me", authMiddleware, authController.me);
 router.post("/auth/activation", authController.activation);
 
-router.post(
-  "/tickets",
+
+
+router.post("/banners", [authMiddleware, aclMiddleware([ROLES.ADMIN])], bannerController.create);
+router.get("/banners", bannerController.findAll);
+router.get("/banners/:id", bannerController.findOne);
+router.put("/banners/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN])], bannerController.update);
+router.delete("/banners/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN])], bannerController.remove);
+
+
+
+router.post("/tickets",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   ticketController.create
 );
 router.get("/tickets", ticketController.findAll);
 router.get("/tickets/:id", ticketController.findOne);
-router.put(
-  "/tickets/:id",
+router.put("/tickets/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   ticketController.update
 );
-router.delete(
-  "/tickets/:id",
+router.delete("/tickets/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   ticketController.remove
 );
 router.get("/tickets/:eventId/events", ticketController.findAllByEvent);
 
-router.post(
-  "/category",
+
+
+router.post("/category",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   categoryController.create
   /*
@@ -51,22 +60,19 @@ router.post(
       $ref: '#/components/schemas/CreateCategoryRequest'}
   */
 );
-router.get(
-  "/category",
+router.get("/category",
   categoryController.findAll
   /*
   #swagger.tags = ['Category'],
   */
 );
-router.get(
-  "/category/:id",
+router.get("/category/:id",
   categoryController.findOne
   /*
   #swagger.tags = ['Category'],
   */
 );
-router.put(
-  "/category/:id",
+router.put("/category/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   categoryController.update
   /*
@@ -81,8 +87,7 @@ router.put(
   }
   */
 );
-router.delete(
-  "/category/:id",
+router.delete("/category/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   categoryController.remove
   /*
@@ -93,8 +98,9 @@ router.delete(
   */
 );
 
-router.post(
-  "/events",
+
+
+router.post("/events",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   eventController.create
   /*
@@ -109,22 +115,19 @@ router.post(
   }
   */
 );
-router.get(
-  "/events",
+router.get("/events",
   eventController.findAll
   /*
   #swagger.tags = ['Events'],
   */
 );
-router.get(
-  "/events/:id",
+router.get("/events/:id",
   eventController.findOne
   /**
   #swagger.tags = ['Events'],
    */
 );
-router.put(
-  "/events/:id",
+router.put("/events/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   eventController.update
   /*
@@ -139,8 +142,7 @@ router.put(
   }
   */
 );
-router.delete(
-  "/events/:id",
+router.delete("/events/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   eventController.remove
   /*
@@ -150,8 +152,7 @@ router.delete(
   }]
    */
 );
-router.get(
-  "/events/:slug/slug",
+router.get("/events/:slug/slug",
   eventController.findOneBySlug
   /*
   #swagger.tags = ['Events'],
@@ -160,44 +161,37 @@ router.get(
 
 
 
-
-router.get(
-  "/regions",
+router.get("/regions",
   regionController.getAllProvinces
   /*
   #swagger.tags = ['Regions']
   */
 );
-router.get(
-  "/regions/:id/province",
+router.get("/regions/:id/province",
   regionController.getProvince
   /*
   #swagger.tags = ['Regions']
   */
 );
-router.get(
-  "/regions/:id/regency",
+router.get("/regions/:id/regency",
   regionController.getRegency
   /*
   #swagger.tags = ['Regions']
   */
 );
-router.get(
-  "/regions/:id/district",
+router.get("/regions/:id/district",
   regionController.getDistrict
   /*
   #swagger.tags = ['Regions']
   */
 );
-router.get(
-  "/regions/:id/village",
+router.get("/regions/:id/village",
   regionController.getVillage
   /*
   #swagger.tags = ['Regions']
   */
 );
-router.get(
-  "/regions-search",
+router.get("/regions-search",
   regionController.findByCity
   /*
   #swagger.tags = ['Regions']
@@ -206,10 +200,7 @@ router.get(
 
 
 
-
-
-router.post(
-  "/media/upload-single",
+router.post("/media/upload-single",
   [
     authMiddleware,
     aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
@@ -240,8 +231,7 @@ router.post(
   */
 );
 
-router.post(
-  "/media/upload-multiple",
+router.post("/media/upload-multiple",
   [
     authMiddleware,
     aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
@@ -275,8 +265,7 @@ router.post(
   */
 );
 
-router.delete(
-  "/media/remove",
+router.delete("/media/remove",
   [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],
   mediaController.remove
   /*
@@ -292,5 +281,7 @@ router.delete(
   }
   */
 );
+
+
 
 export default router;

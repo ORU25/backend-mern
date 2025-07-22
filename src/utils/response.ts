@@ -84,4 +84,13 @@ export default {
       pagination,
     });
   },
+  notFound(res: Response, message: string = "Unauthorized") {
+    res.status(404).json({
+      meta: {
+        status: 404,
+        message,
+      },
+      data: null,
+    });
+  },
 };
