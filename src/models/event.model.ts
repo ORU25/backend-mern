@@ -34,6 +34,8 @@ export interface Event extends Omit<TEvent, "category" | "createdBy"> {
   createdBy: ObjectId;
 }
 
+export const EVENT_MODEL_NAME = "Event";
+
 const EventSchema = new Schema<Event>(
   {
     name: {
@@ -107,6 +109,6 @@ EventSchema.pre("save", function () {
   }
 });
 
-const EventModel = mongoose.model<Event>("Event", EventSchema);
+const EventModel = mongoose.model<Event>(EVENT_MODEL_NAME, EventSchema);
 
 export default EventModel;

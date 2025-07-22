@@ -8,6 +8,7 @@ import mediaController from "../controllers/media.controller";
 import categoryController from "../controllers/category.controller";
 import regionController from "../controllers/region.controller";
 import eventController from "../controllers/event.controller";
+import ticketController from "../controllers/ticket.controller";
 
 const router = express.Router();
 
@@ -15,6 +16,25 @@ router.post("/auth/register", authController.register);
 router.post("/auth/login", authController.login);
 router.get("/auth/me", authMiddleware, authController.me);
 router.post("/auth/activation", authController.activation);
+
+router.post(
+  "/tickets",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  ticketController.create
+);
+router.get("/tickets", ticketController.findAll);
+router.get("/tickets/:id", ticketController.findOne);
+router.put(
+  "/tickets/:id",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  ticketController.update
+);
+router.delete(
+  "/tickets/:id",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  ticketController.remove
+);
+router.get("/tickets/:eventId/events", ticketController.findAllByEvent);
 
 router.post(
   "/category",
@@ -130,11 +150,16 @@ router.delete(
   }]
    */
 );
-router.get("/events/:slug/slug", eventController.findOneBySlug
+router.get(
+  "/events/:slug/slug",
+  eventController.findOneBySlug
   /*
   #swagger.tags = ['Events'],
   */
 );
+
+
+
 
 router.get(
   "/regions",
@@ -178,6 +203,10 @@ router.get(
   #swagger.tags = ['Regions']
   */
 );
+
+
+
+
 
 router.post(
   "/media/upload-single",
