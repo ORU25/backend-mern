@@ -54,11 +54,24 @@ const doc = {
         location: {
           region: "region id",
           coordinates: [0, 0],
-          address: ""
+          address: "",
         },
         isOnline: false,
         isFeatured: false,
-        isPublish: false
+        isPublish: false,
+      },
+      CreateBannerRequest: {
+        title: "phoebe banner 3",
+        image:
+          "https://res.cloudinary.com/djdz9inbp/image/upload/v1753184101/brm7qezcyez6wcf1rl6f.jpg",
+        isShow: false,
+      },
+      CreateTicketRequest: {
+        price: 10000,
+        name: "Ticket Standar",
+        events: "687e0e1fda5852ff833ea496",
+        description: "ini ticket standar",
+        quantity: 100,
       },
       RemoveMediaRequest: {
         fileUrl: "",
