@@ -59,6 +59,11 @@ export default {
     try {
       const { id } = req.params;
       const result = await BannerModel.findById(id);
+
+      if(!result){
+        return response.notFound(res, "Banner not found");
+      }
+
       response.success(res, result, "Success find one banner");
     } catch (error) {
       response.error(res, error, "Failed to find one banner");

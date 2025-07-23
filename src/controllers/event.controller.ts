@@ -39,14 +39,17 @@ export default {
         .sort({ createdAt: -1 })
         .exec();
 
-      const count =  await EventModel.countDocuments(query).exec();
-      response.pagination(res, result, {
-        current: page,
-        total: count,
-        totalPages: Math.ceil(count / limit),
-      }, "Success get all events");
-    
-
+      const count = await EventModel.countDocuments(query).exec();
+      response.pagination(
+        res,
+        result,
+        {
+          current: page,
+          total: count,
+          totalPages: Math.ceil(count / limit),
+        },
+        "Success get all events"
+      );
     } catch (error) {
       response.error(res, error, "Failed find all events");
     }
@@ -54,9 +57,12 @@ export default {
 
   async findOne(req: IReqUser, res: Response) {
     try {
-        const { id } = req.params;
-        const result = await EventModel.findById(id)
-        response.success(res, result, "Success get event by id");
+      const { id } = req.params;
+      const result = await EventModel.findById(id);
+      if (!result) {
+        return response.notFound(res, "Event not found");
+      }
+      response.success(res, result, "Success get event by id");
     } catch (error) {
       response.error(res, error, "Failed find event by id");
     }
@@ -64,9 +70,11 @@ export default {
 
   async update(req: IReqUser, res: Response) {
     try {
-        const { id } = req.params;
-        const result = await EventModel.findByIdAndUpdate(id, req.body, { new: true });
-        response.success(res, result, "Success update event");
+      const { id } = req.params;
+      const result = await EventModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      response.success(res, result, "Success update event");
     } catch (error) {
       response.error(res, error, "Failed update event");
     }
@@ -74,11 +82,11 @@ export default {
 
   async remove(req: IReqUser, res: Response) {
     try {
-        const { id } = req.params;
-        const result = await EventModel.findByIdAndDelete(id, {
-          new: true,
-        });
-        response.success(res, result, "Success delete event");
+      const { id } = req.params;
+      const result = await EventModel.findByIdAndDelete(id, {
+        new: true,
+      });
+      response.success(res, result, "Success delete event");
     } catch (error) {
       response.error(res, error, "Failed delete event");
     }
@@ -86,9 +94,9 @@ export default {
 
   async findOneBySlug(req: IReqUser, res: Response) {
     try {
-        const { slug } = req.params;
-        const result = await EventModel.findOne({ slug });
-        response.success(res, result, "Success get event by slug");
+      const { slug } = req.params;
+      const result = await EventModel.findOne({ slug });
+      response.success(res, result, "Success get event by slug");
     } catch (error) {
       response.error(res, error, "Failed find event by slug");
     }
