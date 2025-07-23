@@ -18,32 +18,34 @@ interface Ticket extends Omit<TypeTicket, "events"> {
   events: Schema.Types.ObjectId;
 }
 
-const TicketChema = new Schema<Ticket>({
+const TicketChema = new Schema<Ticket>(
+  {
     price: {
-        type: Schema.Types.Number,
-        required: true,
+      type: Schema.Types.Number,
+      required: true,
     },
     name: {
-        type: Schema.Types.String,
-        required: true,
+      type: Schema.Types.String,
+      required: true,
     },
     description: {
-        type: Schema.Types.String,
-        required: true,
+      type: Schema.Types.String,
+      required: true,
     },
     events: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: EVENT_MODEL_NAME
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: EVENT_MODEL_NAME,
     },
     quantity: {
-        type: Schema.Types.Number,
-        required: true,
+      type: Schema.Types.Number,
+      required: true,
     },
-}, {
-    timestamps: true
-})
-
+  },
+  {
+    timestamps: true,
+  }
+).index({ name: "text" });
 
 const TicketModel = mongoose.model(TICKET_MODEL_NAME, TicketChema);
 
