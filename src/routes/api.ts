@@ -31,6 +31,7 @@ router.post(
     required: true,
     schema:{
       $ref: '#/components/schemas/CreateBannerRequest'}
+  }
   */
 );
 router.get(
@@ -60,6 +61,7 @@ router.put(
     required: true,
     schema:{
       $ref: '#/components/schemas/CreateBannerRequest'}
+  }
   */
 );
 router.delete(
@@ -87,6 +89,7 @@ router.post(
     required: true,
     schema:{
       $ref: '#/components/schemas/CreateTicketRequest'}
+  }
   */
 );
 router.get(
@@ -116,6 +119,7 @@ router.put(
     required: true,
     schema:{
       $ref: '#/components/schemas/CreateTicketRequest'}
+  }
   */
 );
 router.delete(
@@ -150,6 +154,7 @@ router.post(
     required: true,
     schema:{
       $ref: '#/components/schemas/CreateCategoryRequest'}
+  }
   */
 );
 router.get(
