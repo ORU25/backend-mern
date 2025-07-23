@@ -2,7 +2,7 @@ import { Response } from "express";
 import { IPaginationQuery, IReqUser } from "../utils/interfaces";
 import response from "../utils/response";
 import BannerModel, { bannerDAO, TypeBanner } from "../models/banner.model";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 
 export default {
   async create(req: IReqUser, res: Response) {
@@ -58,9 +58,12 @@ export default {
   async findOne(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Failed find one banner");
+      }
       const result = await BannerModel.findById(id);
 
-      if(!result){
+      if (!result) {
         return response.notFound(res, "Banner not found");
       }
 
@@ -71,20 +74,28 @@ export default {
   },
   async update(req: IReqUser, res: Response) {
     try {
-         const { id } = req.params;
-         const result = await BannerModel.findByIdAndUpdate(id, req.body, { new: true });
-         response.success(res, result, "Success update banner");
+      const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Failed update banner");
+      }
+      const result = await BannerModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      response.success(res, result, "Success update banner");
     } catch (error) {
       response.error(res, error, "Failed to update banner");
     }
   },
   async remove(req: IReqUser, res: Response) {
     try {
-         const { id } = req.params;
-         const result = await BannerModel.findByIdAndDelete(id, {
-           new: true,
-         });
-         response.success(res, result, "Success delete banner");
+      const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Failed remove banner");
+      }
+      const result = await BannerModel.findByIdAndDelete(id, {
+        new: true,
+      });
+      response.success(res, result, "Success delete banner");
     } catch (error) {
       response.error(res, error, "Failed to delete banner");
     }
