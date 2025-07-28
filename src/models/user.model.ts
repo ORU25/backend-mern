@@ -16,6 +16,8 @@ export interface User {
   createdAt?: string;
 }
 
+export const USER_MODEL_NAME = "User";
+
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema<User>(
@@ -97,6 +99,6 @@ UserSchema.methods.toJSON = function () {
   return user;
 };
 
-const UserMonel = mongoose.model("User", UserSchema);
+const UserMonel = mongoose.model(USER_MODEL_NAME, UserSchema);
 
 export default UserMonel;
