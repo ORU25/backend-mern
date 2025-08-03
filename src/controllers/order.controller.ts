@@ -12,6 +12,10 @@ import { FilterQuery } from "mongoose";
 import { getId } from "../utils/id";
 
 export default {
+  test (req: IReqUser, res: Response) {
+    response.success(res, null, "Success");
+  },
+  
   async create(req: IReqUser, res: Response) {
     try {
       const userId = req.user?.id;

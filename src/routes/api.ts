@@ -21,15 +21,37 @@ router.post("/auth/activation", authController.activation);
 
 router.post(
   "/orders",
-  [aclMiddleware, aclMiddleware([ROLES.MEMBER])],
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
   orderController.create
-  /*
-  #swagger.tags = ['Order'],
-  #swagger.security = [{
-    "bearerAuth": {}
-  }]
-  */
 );
+
+router.get(
+  "/orders",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  orderController.findAll
+);
+router.get(
+  "/orders/:id",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],
+  orderController.findOne
+);
+router.put(
+  "/orders/:id/completed",
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
+  orderController.complete
+);
+router.put(
+  "/orders/:id/pending",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  orderController.pending
+);
+router.put(
+  "/orders/:id/cancelled",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  orderController.cancelled
+);
+
+router.get("/orders-history", [authMiddleware, aclMiddleware([ROLES.MEMBER])], orderController.findAllByMember);
 
 
 
