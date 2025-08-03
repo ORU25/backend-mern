@@ -52,7 +52,7 @@ const doc = {
         startDate: "yyyy-mm-dd hh:mm:ss",
         endDate: "yyyy-mm-dd hh:mm:ss",
         location: {
-          region: "region id",
+          region: 3273,
           coordinates: [0, 0],
           address: "",
         },
@@ -75,6 +75,11 @@ const doc = {
       },
       RemoveMediaRequest: {
         fileUrl: "",
+      },
+      CreateOrderRequest: {
+        events: "event_objectId",
+        ticket: "ticket_objectId",
+        quantity: 5,
       },
     },
   },

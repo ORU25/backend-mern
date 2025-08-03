@@ -28,6 +28,12 @@ router.post(
   #swagger.security = [{
     "bearerAuth": {}
   }]
+  #swagger.requestBody = {
+    required: true,
+    schema: {
+      $ref: '#/components/schemas/CreateOrderRequest'
+    }
+  }
   */
 );
 
@@ -43,7 +49,7 @@ router.get(
   */
 );
 router.get(
-  "/orders/:id",
+  "/orders/:orderId",
   [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],
   orderController.findOne
   /*
@@ -54,7 +60,7 @@ router.get(
   */
 );
 router.put(
-  "/orders/:id/completed",
+  "/orders/:orderId/completed",
   [authMiddleware, aclMiddleware([ROLES.MEMBER])],
   orderController.complete
   /*
@@ -65,7 +71,7 @@ router.put(
   */
 );
 router.put(
-  "/orders/:id/pending",
+  "/orders/:orderId/pending",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   orderController.pending
   /*
@@ -76,7 +82,7 @@ router.put(
   */
 );
 router.put(
-  "/orders/:id/cancelled",
+  "/orders/:orderId/cancelled",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   orderController.cancelled
   /*
@@ -116,7 +122,7 @@ router.post(
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   bannerController.create
   /*
-  #swagger.tags = ['Banner'],
+  #swagger.tags = ['Banners'],
   #swagger.security = [{
     "bearerAuth": {}
   }]
