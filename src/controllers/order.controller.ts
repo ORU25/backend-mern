@@ -12,10 +12,6 @@ import { FilterQuery } from "mongoose";
 import { getId } from "../utils/id";
 
 export default {
-  test (req: IReqUser, res: Response) {
-    response.success(res, null, "Success");
-  },
-  
   async create(req: IReqUser, res: Response) {
     try {
       const userId = req.user?.id;
@@ -151,7 +147,6 @@ export default {
       );
 
       response.success(res, result, "Success to complete an order");
-      
     } catch (error) {
       response.error(res, error, "Failed to complete an order");
     }
@@ -168,6 +163,24 @@ export default {
     try {
     } catch (error) {
       response.error(res, error, "Failed to cancelled an order");
+    }
+  },
+
+  async remove(req: IReqUser, res: Response) {
+    try {
+      const { orderId } = req.params;
+      const result = await OrderModel.findOneAndDelete(
+        {
+          orderId,
+        },
+        {
+          new: true,
+        }
+      );
+      if (!result) return response.notFound(res, "Order not found");
+      response.success(res, result, "Success to remove an order");
+    } catch (error) {
+      response.error(res, error, "Failed to remove an order");
     }
   },
 };

@@ -23,37 +23,93 @@ router.post(
   "/orders",
   [authMiddleware, aclMiddleware([ROLES.MEMBER])],
   orderController.create
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 
 router.get(
   "/orders",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   orderController.findAll
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 router.get(
   "/orders/:id",
   [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],
   orderController.findOne
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 router.put(
   "/orders/:id/completed",
   [authMiddleware, aclMiddleware([ROLES.MEMBER])],
   orderController.complete
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 router.put(
   "/orders/:id/pending",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   orderController.pending
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 router.put(
   "/orders/:id/cancelled",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
   orderController.cancelled
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
 );
 
-router.get("/orders-history", [authMiddleware, aclMiddleware([ROLES.MEMBER])], orderController.findAllByMember);
+router.get(
+  "/orders-history",
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
+  orderController.findAllByMember
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
+);
 
-
+router.delete(
+  "/orders/:orderId",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  orderController.remove
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
+);
 
 router.post(
   "/banners",
