@@ -10,6 +10,7 @@ import regionController from "../controllers/region.controller";
 import eventController from "../controllers/event.controller";
 import ticketController from "../controllers/ticket.controller";
 import bannerController from "../controllers/banner.controller";
+import orderController from "../controllers/order.controller";
 
 const router = express.Router();
 
@@ -17,6 +18,20 @@ router.post("/auth/register", authController.register);
 router.post("/auth/login", authController.login);
 router.get("/auth/me", authMiddleware, authController.me);
 router.post("/auth/activation", authController.activation);
+
+router.post(
+  "/orders",
+  [aclMiddleware, aclMiddleware([ROLES.MEMBER])],
+  orderController.create
+  /*
+  #swagger.tags = ['Order'],
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  */
+);
+
+
 
 router.post(
   "/banners",
