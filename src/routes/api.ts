@@ -14,11 +14,83 @@ import orderController from "../controllers/order.controller";
 
 const router = express.Router();
 
-router.post("/auth/register", authController.register);
-router.post("/auth/login", authController.login);
-router.get("/auth/me", authMiddleware, authController.me);
-router.post("/auth/activation", authController.activation);
+//AUTH
+router.post(
+  "/auth/register",
+  authController.register
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/RegisterRequest"}
+    }
+  */
+);
+router.post(
+  "/auth/login",
+  authController.login
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/LoginRequest"}
+    }
+  */
+);
+router.get(
+  "/auth/me",
+  authMiddleware,
+  authController.me
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+);
+router.post(
+  "/auth/activation",
+  authController.activation
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/ActivationRequest"}
+    }
+  */
+);
+router.put(
+  "/auth/update-profile",
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
+  authController.updateProfile
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.security = [{
+      "bearerAuth": []
+    }]
+    #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/UpdateProfileRequest"}
+    }
+  */
+);
+router.put(
+  "/auth/update-password",
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
+  authController.updatePassword
+  /**
+    #swagger.tags = ['Auth']
+    #swagger.security = [{
+      "bearerAuth": []
+    }]
+    #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/UpdatePasswordRequest"}
+    }
+  */
+);
 
+//ORDER
 router.post(
   "/orders",
   [authMiddleware, aclMiddleware([ROLES.MEMBER])],
@@ -36,7 +108,6 @@ router.post(
   }
   */
 );
-
 router.get(
   "/orders",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
@@ -92,7 +163,6 @@ router.put(
   }]
   */
 );
-
 router.get(
   "/orders-history",
   [authMiddleware, aclMiddleware([ROLES.MEMBER])],
@@ -104,7 +174,6 @@ router.get(
   }]
   */
 );
-
 router.delete(
   "/orders/:orderId",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
@@ -117,6 +186,7 @@ router.delete(
   */
 );
 
+//BANNER
 router.post(
   "/banners",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
@@ -175,6 +245,7 @@ router.delete(
   */
 );
 
+//TICKET
 router.post(
   "/tickets",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
@@ -240,6 +311,7 @@ router.get(
   */
 );
 
+//CATEGORY
 router.post(
   "/category",
   [authMiddleware, aclMiddleware([ROLES.ADMIN])],
@@ -389,6 +461,7 @@ router.get(
   */
 );
 
+//REGIONS
 router.get(
   "/regions",
   regionController.getAllProvinces
@@ -432,6 +505,7 @@ router.get(
   */
 );
 
+//MEDIA
 router.post(
   "/media/upload-single",
   [
@@ -463,7 +537,6 @@ router.post(
   }
   */
 );
-
 router.post(
   "/media/upload-multiple",
   [
@@ -498,7 +571,6 @@ router.post(
   }
   */
 );
-
 router.delete(
   "/media/remove",
   [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],

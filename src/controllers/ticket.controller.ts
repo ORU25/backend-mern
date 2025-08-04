@@ -1,13 +1,13 @@
 import { Response } from "express";
 import response from "../utils/response";
 import { IPaginationQuery, IReqUser } from "../utils/interfaces";
-import TicketModel, { ticketDAO, TypeTicket } from "../models/ticket.model";
+import TicketModel, { ticketDTO, TypeTicket } from "../models/ticket.model";
 import { FilterQuery, isValidObjectId } from "mongoose";
 
 export default {
   async create(req: IReqUser, res: Response) {
     try {
-      await ticketDAO.validate(req.body);
+      await ticketDTO.validate(req.body);
       const result = await TicketModel.create(req.body);
       response.success(res, result, "Success create a ticket");
     } catch (error) {
@@ -20,7 +20,7 @@ export default {
         limit = 10,
         page = 1,
         search,
-      } = req.query as unknown as IPaginationQuery;
+      } = req.query as unknown as IPaginationQuery; 
 
       const query: FilterQuery<TypeTicket> = {};
 
@@ -88,9 +88,9 @@ export default {
   async remove(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
-       if (!isValidObjectId(id)) {
-         return response.notFound(res, "Failed remove ticket");
-       }
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Failed remove ticket");
+      }
       const result = await TicketModel.findByIdAndDelete(id, {
         new: true,
       });
