@@ -1,8 +1,9 @@
 import { Response } from "express";
 import { IPaginationQuery, IReqUser } from "../utils/interfaces";
 import response from "../utils/response";
-import EventModel, { eventDTO, TypeEvent,  } from "../models/event.model";
+import EventModel, { eventDTO, TypeEvent } from "../models/event.model";
 import { FilterQuery, isValidObjectId } from "mongoose";
+import uploader from "../utils/uploader";
 
 export default {
   async create(req: IReqUser, res: Response) {
@@ -18,18 +19,17 @@ export default {
 
   async findAll(req: IReqUser, res: Response) {
     try {
-
       const buildQuery = (filter: any) => {
         let query: FilterQuery<TypeEvent> = {};
 
-        if(filter.search)query.$text = { $search: filter.search };
-        if(filter.category)query.category = filter.category;
-        if(filter.isOnline)query.isOnline = filter.isOnline;
-        if(filter.isPublish)query.isPublish = filter.isPublish;
-        if(filter.isFeatured)query.isFeatured = filter.isFeatured;
+        if (filter.search) query.$text = { $search: filter.search };
+        if (filter.category) query.category = filter.category;
+        if (filter.isOnline) query.isOnline = filter.isOnline;
+        if (filter.isPublish) query.isPublish = filter.isPublish;
+        if (filter.isFeatured) query.isFeatured = filter.isFeatured;
 
-        return query
-      }
+        return query;
+      };
 
       const {
         limit = 10,
@@ -97,6 +97,9 @@ export default {
       const result = await EventModel.findByIdAndUpdate(id, req.body, {
         new: true,
       });
+
+      if (!result) return response.notFound(res, "Event not found");
+
       response.success(res, result, "Success update event");
     } catch (error) {
       response.error(res, error, "Failed update event");
@@ -112,6 +115,11 @@ export default {
       const result = await EventModel.findByIdAndDelete(id, {
         new: true,
       });
+
+      if (!result) return response.notFound(res, "Event not found");
+
+      await uploader.remove(result.banner);
+
       response.success(res, result, "Success delete event");
     } catch (error) {
       response.error(res, error, "Failed delete event");
@@ -122,6 +130,9 @@ export default {
     try {
       const { slug } = req.params;
       const result = await EventModel.findOne({ slug });
+
+      if (!result) return response.notFound(res, "Event not found");
+
       response.success(res, result, "Success get event by slug");
     } catch (error) {
       response.error(res, error, "Failed find event by slug");
