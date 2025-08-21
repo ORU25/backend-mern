@@ -277,9 +277,7 @@ export default {
   },
 
   async completeOrder(orderId: string) {
-    const order = await OrderModel.findOne({
-      orderId,
-    });
+    const order = await OrderModel.findOne({ orderId });
 
     if (!order) throw new Error("Order not found");
     if (order.status === OrderStatus.COMPLETED)
@@ -315,7 +313,7 @@ export default {
   async midtransNotification(req: IReqUser, res: Response) {
     try {
       const notification = req.body;
-      console.log("📩 Notifikasi Midtrans:", notification);
+      // console.log("📩 Notifikasi Midtrans:", notification);
 
       const { order_id, transaction_status } = notification;
 
@@ -327,7 +325,7 @@ export default {
       if (transaction_status === "settlement") {
         // panggil fungsi complete
         await this.completeOrder(order_id);
-        console.log(`✅ Order ${order_id} sukses dibayar`);
+        // console.log(`✅ Order ${order_id} sukses dibayar`);
       }
 
       if (transaction_status === "pending") {
@@ -341,9 +339,10 @@ export default {
       ) {
         await OrderModel.findOneAndUpdate(
           { orderId: order_id },
-          { status: OrderStatus.CANCELLED }
+          { status: OrderStatus.CANCELLED },
+          { new: true }
         );
-        console.log(`❌ Order ${order_id} dibatalkan/expired`);
+        // console.log(`❌ Order ${order_id} dibatalkan/expired`);
       }
 
       // balas OK agar Midtrans tidak retry
