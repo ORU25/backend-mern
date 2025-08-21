@@ -276,10 +276,9 @@ export default {
     }
   },
 
-  async completeOrder(orderId: string, userId?: string) {
+  async completeOrder(orderId: string) {
     const order = await OrderModel.findOne({
       orderId,
-      ...(userId ? { createdBy: userId } : {}),
     });
 
     if (!order) throw new Error("Order not found");
@@ -297,7 +296,7 @@ export default {
     );
 
     const result = await OrderModel.findOneAndUpdate(
-      { orderId, ...(userId ? { createdBy: userId } : {}) },
+      { orderId },
       { vouchers, status: OrderStatus.COMPLETED },
       { new: true }
     );
@@ -327,12 +326,11 @@ export default {
       // mapping midtrans status ke fungsi order
       if (transaction_status === "settlement") {
         // panggil fungsi complete
-
+        await this.completeOrder(order_id);
         console.log(`✅ Order ${order_id} sukses dibayar`);
       }
 
       if (transaction_status === "pending") {
-        await this.completeOrder(order_id);
         console.log(`⏳ Order ${order_id} pending`);
       }
 
