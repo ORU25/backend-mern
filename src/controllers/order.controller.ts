@@ -276,52 +276,83 @@ export default {
     }
   },
 
+  async completeOrder(orderId: string, userId?: string) {
+    const order = await OrderModel.findOne({
+      orderId,
+      ...(userId ? { createdBy: userId } : {}),
+    });
+
+    if (!order) throw new Error("Order not found");
+    if (order.status === OrderStatus.COMPLETED)
+      throw new Error("Order already completed");
+
+    const vouchers: TypeVoucher[] = Array.from(
+      { length: order.quantity },
+      () => {
+        return {
+          isPrint: false,
+          voucherId: getId(),
+        } as TypeVoucher;
+      }
+    );
+
+    const result = await OrderModel.findOneAndUpdate(
+      { orderId, ...(userId ? { createdBy: userId } : {}) },
+      { vouchers, status: OrderStatus.COMPLETED },
+      { new: true }
+    );
+
+    const ticket = await TicketModel.findById(order.ticket);
+    if (!ticket) throw new Error("Ticket not found");
+
+    await TicketModel.updateOne(
+      { _id: ticket._id },
+      { quantity: ticket.quantity - order.quantity }
+    );
+
+    return result;
+  },
+
   async midtransNotification(req: IReqUser, res: Response) {
-     try {
-       const notification = req.body;
-       console.log("📩 Notifikasi Midtrans:", notification);
+    try {
+      const notification = req.body;
+      console.log("📩 Notifikasi Midtrans:", notification);
 
-       const { order_id, transaction_status } = notification;
+      const { order_id, transaction_status } = notification;
 
-       // ambil order
-       const order = await OrderModel.findOne({ orderId: order_id });
-       if (!order) return response.notFound(res, "Order not found");
+      // ambil order
+      const order = await OrderModel.findOne({ orderId: order_id });
+      if (!order) return response.notFound(res, "Order not found");
 
-       // mapping midtrans status ke fungsi order
-       if (transaction_status === "settlement") {
-         // panggil fungsi complete
-         await OrderModel.findOneAndUpdate(
-           { orderId: order_id },
-           { status: OrderStatus.COMPLETED }
-         );
-         console.log(`✅ Order ${order_id} sukses dibayar`);
-       }
+      // mapping midtrans status ke fungsi order
+      if (transaction_status === "settlement") {
+        // panggil fungsi complete
 
-       if (transaction_status === "pending") {
-         await OrderModel.findOneAndUpdate(
-           { orderId: order_id },
-           { status: OrderStatus.PENDING }
-         );
-         console.log(`⏳ Order ${order_id} pending`);
-       }
+        console.log(`✅ Order ${order_id} sukses dibayar`);
+      }
 
-       if (
-         transaction_status === "expire" ||
-         transaction_status === "cancel" ||
-         transaction_status === "deny"
-       ) {
-         await OrderModel.findOneAndUpdate(
-           { orderId: order_id },
-           { status: OrderStatus.CANCELLED }
-         );
-         console.log(`❌ Order ${order_id} dibatalkan/expired`);
-       }
+      if (transaction_status === "pending") {
+        await this.completeOrder(order_id);
+        console.log(`⏳ Order ${order_id} pending`);
+      }
 
-       // balas OK agar Midtrans tidak retry
-       return res.status(200).json({ message: "Notification processed" });
-     } catch (error) {
-       console.error("🔥 Error midtransNotification:", error);
-       return response.error(res, error, "Failed to process notification");
-     }
-  }
+      if (
+        transaction_status === "expire" ||
+        transaction_status === "cancel" ||
+        transaction_status === "deny"
+      ) {
+        await OrderModel.findOneAndUpdate(
+          { orderId: order_id },
+          { status: OrderStatus.CANCELLED }
+        );
+        console.log(`❌ Order ${order_id} dibatalkan/expired`);
+      }
+
+      // balas OK agar Midtrans tidak retry
+      return res.status(200).json({ message: "Notification processed" });
+    } catch (error) {
+      console.error("🔥 Error midtransNotification:", error);
+      return response.error(res, error, "Failed to process notification");
+    }
+  },
 };
