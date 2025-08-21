@@ -275,4 +275,53 @@ export default {
       response.error(res, error, "Failed to remove an order");
     }
   },
+
+  async midtransNotification(req: IReqUser, res: Response) {
+     try {
+       const notification = req.body;
+       console.log("📩 Notifikasi Midtrans:", notification);
+
+       const { order_id, transaction_status } = notification;
+
+       // ambil order
+       const order = await OrderModel.findOne({ orderId: order_id });
+       if (!order) return response.notFound(res, "Order not found");
+
+       // mapping midtrans status ke fungsi order
+       if (transaction_status === "settlement") {
+         // panggil fungsi complete
+         await OrderModel.findOneAndUpdate(
+           { orderId: order_id },
+           { status: OrderStatus.COMPLETED }
+         );
+         console.log(`✅ Order ${order_id} sukses dibayar`);
+       }
+
+       if (transaction_status === "pending") {
+         await OrderModel.findOneAndUpdate(
+           { orderId: order_id },
+           { status: OrderStatus.PENDING }
+         );
+         console.log(`⏳ Order ${order_id} pending`);
+       }
+
+       if (
+         transaction_status === "expire" ||
+         transaction_status === "cancel" ||
+         transaction_status === "deny"
+       ) {
+         await OrderModel.findOneAndUpdate(
+           { orderId: order_id },
+           { status: OrderStatus.CANCELLED }
+         );
+         console.log(`❌ Order ${order_id} dibatalkan/expired`);
+       }
+
+       // balas OK agar Midtrans tidak retry
+       return res.status(200).json({ message: "Notification processed" });
+     } catch (error) {
+       console.error("🔥 Error midtransNotification:", error);
+       return response.error(res, error, "Failed to process notification");
+     }
+  }
 };

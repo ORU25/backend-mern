@@ -589,4 +589,7 @@ router.delete(
   */
 );
 
+//Payment
+router.post("/midtrans/notification", orderController.midtransNotification)
+
 export default router;
